@@ -123,10 +123,10 @@ public class LuceneExampleCLI {
         .append("\nOprions:");
     StringBuilder commandLineFooter = new StringBuilder()
         .append("\nExamples:\n")
-        .append(" java -jar example.jar add  -i ./index -d '{\"id\":\"1\", \"title\":\"Lucene\", \"description\":\"Lucene is a full-text serch library implemented in Java.\"}'\n")
-        .append(" java -jar example.jar update -i ./index -d '{\"id\":\"1\", \"title\":\"Lucene\", \"description\":\"Lucene is an open source project available for free download.\"}'\n")
-        .append(" java -jar example.jar delete -i ./index -d '{\"id\":\"1\"}'\n")
-        .append(" java -jar example.jar search -i ./index -q \"Lucene\"\n");
+        .append(" java -jar lucene-example.jar add  -i ./index -d '{\"id\":\"1\", \"title\":\"Lucene\", \"description\":\"Lucene is a full-text serch library implemented in Java.\"}'\n")
+        .append(" java -jar lucene-example.jar update -i ./index -d '{\"id\":\"1\", \"title\":\"Lucene\", \"description\":\"Lucene is an open source project available for free download.\"}'\n")
+        .append(" java -jar lucene-example.jar delete -i ./index -d '{\"id\":\"1\"}'\n")
+        .append(" java -jar lucene-example.jar search -i ./index -q \"Lucene\"\n");
 
     String pathStr = null;
     String dataSrt = null;
