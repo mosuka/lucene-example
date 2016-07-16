@@ -58,6 +58,7 @@
     
     <dependency org="org.codehaus.jackson" name="jackson-core-asl" rev="1.9.13" conf="compile" />
     <dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.9.13" conf="compile" />
+    <dependency org="net.sourceforge.argparse4j" name="argparse4j" rev="0.7.0" conf="compile" />
 
     <dependency org="junit" name="junit" rev="4.10" conf="test" />
   </dependencies>

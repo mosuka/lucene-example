@@ -22,12 +22,14 @@ import org.apache.lucene.document.Document;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 
+import com.github.mosuka.apache.lucene.example.utils.LuceneExampleUtil;
+
 import junit.framework.TestCase;
 
 public class LuceneExampleCLITest extends TestCase {
   public void testCreateDocument() throws JsonParseException, JsonMappingException, IOException {
     String dataStr = "{\"id\":\"1\", \"title\":\"Lucene\", \"description\":\"Lucene is a full-text serch library implemented in Java.\"}";
-    Document document = LuceneExampleCLI.createDocument(dataStr);
+    Document document = LuceneExampleUtil.createDocument(dataStr);
 
     String expectedId = "1";
     String actualId = document.getField("id").stringValue();
