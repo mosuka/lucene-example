@@ -26,7 +26,6 @@ import java.util.Map;
 
 import org.apache.lucene.analysis.ja.JapaneseAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
@@ -43,6 +42,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 public class SearchCommand implements Command{
   @Override
   public void execute(Map<String, Object> attrs) {
+    String responseJSON = null;
     Directory indexDir = null;
     
     try {
@@ -69,25 +69,25 @@ public class SearchCommand implements Command{
           }
           result.add(documentMap);
         }
-        
-        System.out.println(new ObjectMapper().writeValueAsString(result));
+        responseJSON = new ObjectMapper().writeValueAsString(result);
       } catch (IOException e) {
-        e.printStackTrace();
+        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
       } catch (ParseException e) {
-        e.printStackTrace();
+        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
       } finally {
         if (reader != null) {
           reader.close();
         }
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
     } finally {
       try {
         indexDir.close();
       } catch (IOException e) {
-        e.printStackTrace();
+        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
       }
     }
+    System.out.println(responseJSON);
   }
 }

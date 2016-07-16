@@ -32,6 +32,7 @@ import com.github.mosuka.apache.lucene.example.utils.LuceneExampleUtil;
 public class AddCommand implements Command{
   @Override
   public void execute(Map<String, Object> attrs) {
+    String responseJSON = null;
     Directory indexDir = null;
     
     IndexWriterConfig config = new IndexWriterConfig(LuceneExampleUtil.createAnalyzerWrapper());
@@ -46,19 +47,22 @@ public class AddCommand implements Command{
         Document document = LuceneExampleUtil.createDocument((String)attrs.get("data"));
         writer.addDocument(document);
         writer.commit();
+        responseJSON = "{\"status\":\"OK\"}";
       } catch (IOException e) {
-        e.printStackTrace();
+        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
       } finally {
         writer.close();
       }
     } catch (IOException e) {
-      e.printStackTrace();
+      responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
     } finally {
       try {
         indexDir.close();
       } catch (IOException e) {
-        e.printStackTrace();
+        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
       }
     }
+    
+    System.out.println(responseJSON);
   }
 }
