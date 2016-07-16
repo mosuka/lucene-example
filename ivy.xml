@@ -54,8 +54,6 @@
     <!-- <dependency org="org.apache.lucene" name="lucene-spatial-extras" rev="6.1.0" conf="compile" /> -->
     <!-- <dependency org="org.apache.lucene" name="lucene-suggest" rev="6.1.0" conf="compile" /> -->
 
-    <dependency org="commons-cli" name="commons-cli" rev="1.3.1" conf="compile" />
-    
     <dependency org="org.codehaus.jackson" name="jackson-core-asl" rev="1.9.13" conf="compile" />
     <dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.9.13" conf="compile" />
     <dependency org="net.sourceforge.argparse4j" name="argparse4j" rev="0.7.0" conf="compile" />
