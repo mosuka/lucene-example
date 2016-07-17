@@ -51,7 +51,7 @@ public class LuceneExampleUtil {
     return document;
   }
   
-  public static Analyzer createAnalyzerWrapper() {
+  public static PerFieldAnalyzerWrapper createAnalyzerWrapper() {
     Analyzer standardAnalyzer = new StandardAnalyzer();
     Analyzer keywordAnalyzer = new KeywordAnalyzer();
     Analyzer japaneseAnalyzer = new JapaneseAnalyzer();
