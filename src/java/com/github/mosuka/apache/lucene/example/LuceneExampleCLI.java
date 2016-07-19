@@ -37,19 +37,19 @@ public class LuceneExampleCLI {
 
     Subparsers commandSubpersers = argumentParser.addSubparsers().title("Available Commands").metavar("COMMAND");
 
-    Subparser addCmdSubParser = commandSubpersers.addParser("add").help("add data to index.").setDefault("command", new AddCommand());
+    Subparser addCmdSubParser = commandSubpersers.addParser("add").help("Add data to index.").setDefault("command", new AddCommand());
     addCmdSubParser.addArgument("-i", "--index").help("Index directory path.");
     addCmdSubParser.addArgument("-d", "--data").help("Document data formatted using JSON.");
 
-    Subparser updateCmdSubParser = commandSubpersers.addParser("update").help("update data to index.").setDefault("command", new UpdateCommand());
+    Subparser updateCmdSubParser = commandSubpersers.addParser("update").help("Update data of index.").setDefault("command", new UpdateCommand());
     updateCmdSubParser.addArgument("-i", "--index").help("Index directory path.");
     updateCmdSubParser.addArgument("-d", "--data").help("Document data formatted using JSON.");
 
-    Subparser deleteCmdSubParser = commandSubpersers.addParser("delete").help("delete data from index.").setDefault("command", new DeleteCommand());
+    Subparser deleteCmdSubParser = commandSubpersers.addParser("delete").help("Delete data from index.").setDefault("command", new DeleteCommand());
     deleteCmdSubParser.addArgument("-i", "--index").help("Index directory path.");
     deleteCmdSubParser.addArgument("-d", "--data").help("Document data formatted using JSON.");
 
-    Subparser searchCmdSubParser = commandSubpersers.addParser("search").help("search data from index.").setDefault("command", new SearchCommand());
+    Subparser searchCmdSubParser = commandSubpersers.addParser("search").help("Search data of index.").setDefault("command", new SearchCommand());
     searchCmdSubParser.addArgument("-i", "--index").help("Index directory path.");
     searchCmdSubParser.addArgument("-q", "--query").help("Query to search index.");
     
