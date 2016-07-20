@@ -34,8 +34,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 
 public class LuceneExampleUtil {
+
   public static Document createDocument(String dataStr) throws JsonParseException, JsonMappingException, IOException {
-    Map<String, Object> dataMap = new ObjectMapper().readValue(dataStr, new TypeReference<HashMap<String, Object>>() {});
+    Map<String, Object> dataMap = new ObjectMapper().readValue(dataStr, new TypeReference<HashMap<String, Object>>() {
+    });
 
     Document document = new Document();
     if (dataMap.containsKey("id")) {
@@ -50,7 +52,7 @@ public class LuceneExampleUtil {
 
     return document;
   }
-  
+
   public static PerFieldAnalyzerWrapper createAnalyzerWrapper() {
     Analyzer standardAnalyzer = new StandardAnalyzer();
     Analyzer keywordAnalyzer = new KeywordAnalyzer();
@@ -59,9 +61,10 @@ public class LuceneExampleUtil {
     analyzerMap.put("id", keywordAnalyzer);
     analyzerMap.put("title", japaneseAnalyzer);
     analyzerMap.put("description", japaneseAnalyzer);
-    
+
     PerFieldAnalyzerWrapper analyzerWrapper = new PerFieldAnalyzerWrapper(standardAnalyzer, analyzerMap);
-    
+
     return analyzerWrapper;
   }
+
 }

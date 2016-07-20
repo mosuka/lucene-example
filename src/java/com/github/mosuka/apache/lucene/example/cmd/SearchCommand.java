@@ -39,23 +39,24 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.codehaus.jackson.map.ObjectMapper;
 
-public class SearchCommand implements Command{
+public class SearchCommand implements Command {
+
   @Override
   public void execute(Map<String, Object> attrs) {
     String responseJSON = null;
     Directory indexDir = null;
-    
+
     try {
-      indexDir = FSDirectory.open(new File((String)attrs.get("index")).toPath());
+      indexDir = FSDirectory.open(new File((String) attrs.get("index")).toPath());
 
       IndexReader reader = null;
       try {
         reader = DirectoryReader.open(indexDir);
-        
+
         IndexSearcher searcher = new IndexSearcher(reader);
 
         QueryParser queryParser = new QueryParser("title", new JapaneseAnalyzer());
-        Query query = queryParser.parse((String)attrs.get("query"));
+        Query query = queryParser.parse((String) attrs.get("query"));
 
         TopDocs topDocs = searcher.search(query, 10);
 
@@ -63,7 +64,7 @@ public class SearchCommand implements Command{
         for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
           Document document = searcher.doc(scoreDoc.doc);
           Map<String, Object> documentMap = new LinkedHashMap<String, Object>();
-          for (Iterator<IndexableField> i = document.iterator(); i.hasNext(); ) {
+          for (Iterator<IndexableField> i = document.iterator(); i.hasNext();) {
             IndexableField f = i.next();
             documentMap.put(f.name(), f.stringValue());
           }
@@ -90,4 +91,5 @@ public class SearchCommand implements Command{
     }
     System.out.println(responseJSON);
   }
+
 }

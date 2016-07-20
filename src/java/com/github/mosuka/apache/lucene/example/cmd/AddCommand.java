@@ -29,22 +29,23 @@ import org.apache.lucene.store.FSDirectory;
 
 import com.github.mosuka.apache.lucene.example.utils.LuceneExampleUtil;
 
-public class AddCommand implements Command{
+public class AddCommand implements Command {
+
   @Override
   public void execute(Map<String, Object> attrs) {
     String responseJSON = null;
     Directory indexDir = null;
-    
+
     IndexWriterConfig config = new IndexWriterConfig(LuceneExampleUtil.createAnalyzerWrapper());
     config.setOpenMode(OpenMode.CREATE_OR_APPEND);
 
     try {
-      indexDir = FSDirectory.open(new File((String)attrs.get("index")).toPath());
-      
+      indexDir = FSDirectory.open(new File((String) attrs.get("index")).toPath());
+
       IndexWriter writer = null;
       try {
         writer = new IndexWriter(indexDir, config);
-        Document document = LuceneExampleUtil.createDocument((String)attrs.get("data"));
+        Document document = LuceneExampleUtil.createDocument((String) attrs.get("data"));
         writer.addDocument(document);
         writer.commit();
         responseJSON = "{\"status\":\"OK\"}";
@@ -62,7 +63,8 @@ public class AddCommand implements Command{
         responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
       }
     }
-    
+
     System.out.println(responseJSON);
   }
+
 }

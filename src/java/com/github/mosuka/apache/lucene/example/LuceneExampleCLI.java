@@ -29,7 +29,6 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import net.sourceforge.argparse4j.inf.Subparser;
 import net.sourceforge.argparse4j.inf.Subparsers;
 
-
 public class LuceneExampleCLI {
 
   public static void main(String[] args) {
@@ -52,7 +51,7 @@ public class LuceneExampleCLI {
     Subparser searchCmdSubParser = commandSubpersers.addParser("search").help("Search data of index.").setDefault("command", new SearchCommand());
     searchCmdSubParser.addArgument("-i", "--index").help("Index directory path.");
     searchCmdSubParser.addArgument("-q", "--query").help("Query to search index.");
-    
+
     try {
       Namespace ns = argumentParser.parseArgs(args);
       Command command = ns.get("command");
@@ -61,4 +60,5 @@ public class LuceneExampleCLI {
       argumentParser.handleError(e);
     }
   }
+
 }
