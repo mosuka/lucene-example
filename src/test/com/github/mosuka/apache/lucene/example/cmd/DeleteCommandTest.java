@@ -35,11 +35,7 @@ public class DeleteCommandTest extends TestCase {
   public void setUp() {
     _baos = new ByteArrayOutputStream();
     _out = System.out;
-    System.setOut(
-        new PrintStream(
-            new BufferedOutputStream(_baos)
-            )
-        );
+    System.setOut(new PrintStream(new BufferedOutputStream(_baos)));
   }
 
   @After

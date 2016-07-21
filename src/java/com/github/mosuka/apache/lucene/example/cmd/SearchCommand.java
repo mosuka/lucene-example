@@ -47,20 +47,21 @@ public class SearchCommand implements Command {
     Directory indexDir = null;
 
     try {
-      indexDir = FSDirectory.open(new File((String) attrs.get("index")).toPath());
+      indexDir =
+          FSDirectory.open(new File((String) attrs.get("index")).toPath());
 
       IndexReader reader = null;
       try {
-        reader = DirectoryReader.open(indexDir);
-
-        IndexSearcher searcher = new IndexSearcher(reader);
-
-        QueryParser queryParser = new QueryParser("title", new JapaneseAnalyzer());
+        QueryParser queryParser =
+            new QueryParser("title", new JapaneseAnalyzer());
         Query query = queryParser.parse((String) attrs.get("query"));
 
-        TopDocs topDocs = searcher.search(query, 10);
+        reader = DirectoryReader.open(indexDir);
+        IndexSearcher searcher = new IndexSearcher(reader);
 
-        List<Map<String, Object>> result = new LinkedList<Map<String, Object>>();
+        TopDocs topDocs = searcher.search(query, 10);
+        List<Map<String, Object>> result =
+            new LinkedList<Map<String, Object>>();
         for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
           Document document = searcher.doc(scoreDoc.doc);
           Map<String, Object> documentMap = new LinkedHashMap<String, Object>();
@@ -72,21 +73,25 @@ public class SearchCommand implements Command {
         }
         responseJSON = new ObjectMapper().writeValueAsString(result);
       } catch (IOException e) {
-        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
+        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
+            e.getMessage());
       } catch (ParseException e) {
-        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
+        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
+            e.getMessage());
       } finally {
         if (reader != null) {
           reader.close();
         }
       }
     } catch (IOException e) {
-      responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
+      responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
+          e.getMessage());
     } finally {
       try {
         indexDir.close();
       } catch (IOException e) {
-        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
+        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
+            e.getMessage());
       }
     }
     System.out.println(responseJSON);

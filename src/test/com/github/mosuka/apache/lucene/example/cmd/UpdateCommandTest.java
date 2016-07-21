@@ -35,11 +35,7 @@ public class UpdateCommandTest extends TestCase {
   public void setUp() {
     _baos = new ByteArrayOutputStream();
     _out = System.out;
-    System.setOut(
-        new PrintStream(
-            new BufferedOutputStream(_baos)
-            )
-        );
+    System.setOut(new PrintStream(new BufferedOutputStream(_baos)));
   }
 
   @After
@@ -52,7 +48,8 @@ public class UpdateCommandTest extends TestCase {
 
     Map<String, Object> attrs = new HashMap<String, Object>();
     attrs.put("index", indexPath);
-    attrs.put("data", "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is a OSS.\"}");
+    attrs.put("data",
+        "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is a OSS.\"}");
 
     UpdateCommand updateCommand = new UpdateCommand();
     updateCommand.execute(attrs);

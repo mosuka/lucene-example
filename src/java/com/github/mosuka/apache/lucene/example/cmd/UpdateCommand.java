@@ -37,33 +37,40 @@ public class UpdateCommand implements Command {
     String responseJSON = null;
     Directory indexDir = null;
 
-    IndexWriterConfig config = new IndexWriterConfig(LuceneExampleUtil.createAnalyzerWrapper());
+    IndexWriterConfig config =
+        new IndexWriterConfig(LuceneExampleUtil.createAnalyzerWrapper());
     config.setOpenMode(OpenMode.CREATE_OR_APPEND);
 
     try {
-      indexDir = FSDirectory.open(new File((String) attrs.get("index")).toPath());
+      indexDir =
+          FSDirectory.open(new File((String) attrs.get("index")).toPath());
 
       IndexWriter writer = null;
       try {
+        Document document =
+            LuceneExampleUtil.createDocument((String) attrs.get("data"));
+
         writer = new IndexWriter(indexDir, config);
-        Document document = LuceneExampleUtil.createDocument((String) attrs.get("data"));
         writer.updateDocument(new Term("id", document.get("id")), document);
         writer.commit();
         responseJSON = "{\"status\":\"OK\"}";
       } catch (IOException e) {
-        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
+        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
+            e.getMessage());
       } finally {
         if (writer != null) {
           writer.close();
         }
       }
     } catch (IOException e) {
-      responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
+      responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
+          e.getMessage());
     } finally {
       try {
         indexDir.close();
       } catch (IOException e) {
-        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}", e.getMessage());
+        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
+            e.getMessage());
       }
     }
 

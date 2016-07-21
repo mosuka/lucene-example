@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 
 public class SearchCommandTest extends TestCase {
   private String indexPath;
-  
+
   private ByteArrayOutputStream _baos;
   private PrintStream _out;
 
@@ -39,18 +39,15 @@ public class SearchCommandTest extends TestCase {
 
     Map<String, Object> addAttrs = new HashMap<String, Object>();
     addAttrs.put("index", indexPath);
-    addAttrs.put("data", "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is a OSS.\"}");
+    addAttrs.put("data",
+        "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is a OSS.\"}");
 
     AddCommand addCommand = new AddCommand();
     addCommand.execute(addAttrs);
 
     _baos = new ByteArrayOutputStream();
     _out = System.out;
-    System.setOut(
-        new PrintStream(
-            new BufferedOutputStream(_baos)
-            )
-        );
+    System.setOut(new PrintStream(new BufferedOutputStream(_baos)));
   }
 
   @After
@@ -68,7 +65,8 @@ public class SearchCommandTest extends TestCase {
 
     System.out.flush();
 
-    String expected = "[{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is a OSS.\"}]\n";
+    String expected =
+        "[{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is a OSS.\"}]\n";
     String actual = _baos.toString();
     assertEquals(expected, actual);
   }

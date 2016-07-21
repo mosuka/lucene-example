@@ -35,11 +35,7 @@ public class AddCommandTest extends TestCase {
   public void setUp() {
     _baos = new ByteArrayOutputStream();
     _out = System.out;
-    System.setOut(
-        new PrintStream(
-            new BufferedOutputStream(_baos)
-            )
-        );
+    System.setOut(new PrintStream(new BufferedOutputStream(_baos)));
   }
 
   @After
@@ -52,13 +48,14 @@ public class AddCommandTest extends TestCase {
 
     Map<String, Object> attrs = new HashMap<String, Object>();
     attrs.put("index", indexPath);
-    attrs.put("data", "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is a OSS.\"}");
+    attrs.put("data",
+        "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is a OSS.\"}");
 
     AddCommand addCommand = new AddCommand();
     addCommand.execute(attrs);
 
     System.out.flush();
-    
+
     String expected = "{\"status\":\"OK\"}\n";
     String actual = _baos.toString();
     assertEquals(expected, actual);
