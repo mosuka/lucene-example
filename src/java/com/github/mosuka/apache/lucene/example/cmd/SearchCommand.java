@@ -39,6 +39,8 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.github.mosuka.apache.lucene.example.utils.LuceneExampleUtil;
+
 public class SearchCommand implements Command {
 
   @Override
@@ -48,12 +50,14 @@ public class SearchCommand implements Command {
 
     try {
       indexDir =
-          FSDirectory.open(new File((String) attrs.get("index")).toPath());
+          FSDirectory.open(new File((String) attrs.get("index_path")).toPath());
 
       IndexReader reader = null;
       try {
+        String field = (attrs.get("field") != null ? (String) attrs.get("field")
+            : LuceneExampleUtil.DEFAULT_SEARCH_FIELD);
         QueryParser queryParser =
-            new QueryParser("title", new JapaneseAnalyzer());
+            new QueryParser(field, new JapaneseAnalyzer());
         Query query = queryParser.parse((String) attrs.get("query"));
 
         reader = DirectoryReader.open(indexDir);

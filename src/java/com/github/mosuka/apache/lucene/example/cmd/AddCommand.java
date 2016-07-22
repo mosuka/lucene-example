@@ -42,7 +42,7 @@ public class AddCommand implements Command {
 
     try {
       indexDir =
-          FSDirectory.open(new File((String) attrs.get("index")).toPath());
+          FSDirectory.open(new File((String) attrs.get("index_path")).toPath());
 
       IndexWriter writer = null;
       try {

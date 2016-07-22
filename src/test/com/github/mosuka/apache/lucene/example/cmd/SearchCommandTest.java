@@ -18,10 +18,16 @@ package com.github.mosuka.apache.lucene.example.cmd;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.junit.After;
 import org.junit.Before;
 
@@ -38,9 +44,9 @@ public class SearchCommandTest extends TestCase {
     indexPath = System.getProperty("java.io.tmpdir");
 
     Map<String, Object> addAttrs = new HashMap<String, Object>();
-    addAttrs.put("index", indexPath);
+    addAttrs.put("index_path", indexPath);
     addAttrs.put("data",
-        "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is a OSS.\"}");
+        "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is an OSS.\"}");
 
     AddCommand addCommand = new AddCommand();
     addCommand.execute(addAttrs);
@@ -55,10 +61,12 @@ public class SearchCommandTest extends TestCase {
     System.setOut(_out);
   }
 
-  public void testExecute() {
+  public void testExecute()
+      throws JsonParseException, JsonMappingException, IOException {
     Map<String, Object> searchAttrs = new HashMap<String, Object>();
-    searchAttrs.put("index", indexPath);
-    searchAttrs.put("query", "id:1");
+    searchAttrs.put("index_path", indexPath);
+    searchAttrs.put("field", "title");
+    searchAttrs.put("query", "Lucene");
 
     SearchCommand searchCommand = new SearchCommand();
     searchCommand.execute(searchAttrs);
@@ -66,8 +74,17 @@ public class SearchCommandTest extends TestCase {
     System.out.flush();
 
     String expected =
-        "[{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is a OSS.\"}]\n";
+        "[{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is an OSS.\"}]\n";
     String actual = _baos.toString();
-    assertEquals(expected, actual);
+
+    LinkedList<Map<String, Object>> expectedList = new ObjectMapper().readValue(
+        expected, new TypeReference<LinkedList<HashMap<String, Object>>>() {
+        });
+
+    LinkedList<Map<String, Object>> actualList = new ObjectMapper().readValue(
+        actual, new TypeReference<LinkedList<HashMap<String, Object>>>() {
+        });
+
+    assertEquals(expectedList, actualList);
   }
 }

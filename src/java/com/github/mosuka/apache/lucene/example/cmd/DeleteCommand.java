@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
@@ -43,15 +42,13 @@ public class DeleteCommand implements Command {
 
     try {
       indexDir =
-          FSDirectory.open(new File((String) attrs.get("index")).toPath());
+          FSDirectory.open(new File((String) attrs.get("index_path")).toPath());
 
       IndexWriter writer = null;
       try {
-        Document document =
-            LuceneExampleUtil.createDocument((String) attrs.get("data"));
-
         writer = new IndexWriter(indexDir, config);
-        writer.deleteDocuments(new Term("id", document.get("id")));
+        writer.deleteDocuments(new Term(LuceneExampleUtil.UNIQUE_KEY_FIELD,
+            (String) attrs.get("unique_key_field_value")));
         writer.commit();
         responseJSON = "{\"status\":\"OK\"}";
       } catch (IOException e) {

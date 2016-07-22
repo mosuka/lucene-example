@@ -40,14 +40,15 @@ public class LuceneExampleCLI {
 
     Subparser addCmdSubParser = commandSubpersers.addParser("add")
         .help("Add data to index.").setDefault("command", new AddCommand());
-    addCmdSubParser.addArgument("-i", "--index").help("Index directory path.");
+    addCmdSubParser.addArgument("-i", "--index-path")
+        .help("Index directory path.");
     addCmdSubParser.addArgument("-d", "--data")
         .help("Document data formatted using JSON.");
 
     Subparser updateCmdSubParser =
         commandSubpersers.addParser("update").help("Update data of index.")
             .setDefault("command", new UpdateCommand());
-    updateCmdSubParser.addArgument("-i", "--index")
+    updateCmdSubParser.addArgument("-i", "--index-path")
         .help("Index directory path.");
     updateCmdSubParser.addArgument("-d", "--data")
         .help("Document data formatted using JSON.");
@@ -55,16 +56,17 @@ public class LuceneExampleCLI {
     Subparser deleteCmdSubParser =
         commandSubpersers.addParser("delete").help("Delete data from index.")
             .setDefault("command", new DeleteCommand());
-    deleteCmdSubParser.addArgument("-i", "--index")
+    deleteCmdSubParser.addArgument("-i", "--index-path")
         .help("Index directory path.");
-    deleteCmdSubParser.addArgument("-d", "--data")
-        .help("Document data formatted using JSON.");
+    deleteCmdSubParser.addArgument("-v", "--unique-key-field-value")
+        .help("Unique key field value.");
 
     Subparser searchCmdSubParser =
         commandSubpersers.addParser("search").help("Search data of index.")
             .setDefault("command", new SearchCommand());
-    searchCmdSubParser.addArgument("-i", "--index")
+    searchCmdSubParser.addArgument("-i", "--index-path")
         .help("Index directory path.");
+    searchCmdSubParser.addArgument("-f", "--field").help("Search field.");
     searchCmdSubParser.addArgument("-q", "--query")
         .help("Query to search index.");
 

@@ -43,7 +43,7 @@ public class UpdateCommand implements Command {
 
     try {
       indexDir =
-          FSDirectory.open(new File((String) attrs.get("index")).toPath());
+          FSDirectory.open(new File((String) attrs.get("index_path")).toPath());
 
       IndexWriter writer = null;
       try {
@@ -51,7 +51,8 @@ public class UpdateCommand implements Command {
             LuceneExampleUtil.createDocument((String) attrs.get("data"));
 
         writer = new IndexWriter(indexDir, config);
-        writer.updateDocument(new Term("id", document.get("id")), document);
+        writer.updateDocument(new Term(LuceneExampleUtil.UNIQUE_KEY_FIELD,
+            document.get(LuceneExampleUtil.UNIQUE_KEY_FIELD)), document);
         writer.commit();
         responseJSON = "{\"status\":\"OK\"}";
       } catch (IOException e) {

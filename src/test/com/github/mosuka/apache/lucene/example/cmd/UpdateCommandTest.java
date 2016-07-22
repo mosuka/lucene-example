@@ -18,10 +18,15 @@ package com.github.mosuka.apache.lucene.example.cmd;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.junit.After;
 import org.junit.Before;
 
@@ -43,13 +48,14 @@ public class UpdateCommandTest extends TestCase {
     System.setOut(_out);
   }
 
-  public void testExecute() {
+  public void testExecute()
+      throws JsonParseException, JsonMappingException, IOException {
     String indexPath = System.getProperty("java.io.tmpdir");
 
     Map<String, Object> attrs = new HashMap<String, Object>();
-    attrs.put("index", indexPath);
+    attrs.put("index_path", indexPath);
     attrs.put("data",
-        "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is a OSS.\"}");
+        "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is an OSS.\"}");
 
     UpdateCommand updateCommand = new UpdateCommand();
     updateCommand.execute(attrs);
@@ -58,6 +64,15 @@ public class UpdateCommandTest extends TestCase {
 
     String expected = "{\"status\":\"OK\"}\n";
     String actual = _baos.toString();
-    assertEquals(expected, actual);
+
+    Map<String, Object> expectedMap = new ObjectMapper().readValue(expected,
+        new TypeReference<HashMap<String, Object>>() {
+        });
+
+    Map<String, Object> actualMap = new ObjectMapper().readValue(actual,
+        new TypeReference<HashMap<String, Object>>() {
+        });
+
+    assertEquals(expectedMap, actualMap);
   }
 }
