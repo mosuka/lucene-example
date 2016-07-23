@@ -18,6 +18,7 @@ package com.github.mosuka.apache.lucene.example.cmd;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.lucene.document.Document;
@@ -26,6 +27,7 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import com.github.mosuka.apache.lucene.example.utils.LuceneExampleUtil;
 
@@ -33,44 +35,60 @@ public class AddCommand implements Command {
 
   @Override
   public void execute(Map<String, Object> attrs) {
+    Map<String, Object> responseMap = new LinkedHashMap<String, Object>();
+
     String responseJSON = null;
     Directory indexDir = null;
-
-    IndexWriterConfig config =
-        new IndexWriterConfig(LuceneExampleUtil.createAnalyzerWrapper());
-    config.setOpenMode(OpenMode.CREATE_OR_APPEND);
+    IndexWriter writer = null;
 
     try {
-      indexDir =
-          FSDirectory.open(new File((String) attrs.get("index_path")).toPath());
+      String index = (String) attrs.get("index");
+      String uniqueId = (String) attrs.get("unique_id");
+      String text = (String) attrs.get("text");
 
-      IndexWriter writer = null;
-      try {
-        Document document =
-            LuceneExampleUtil.createDocument((String) attrs.get("data"));
+      indexDir = FSDirectory.open(new File(index).toPath());
 
-        writer = new IndexWriter(indexDir, config);
-        writer.addDocument(document);
-        writer.commit();
-        responseJSON = "{\"status\":\"OK\"}";
-      } catch (IOException e) {
-        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
-            e.getMessage());
-      } finally {
-        writer.close();
-      }
+      Document document = LuceneExampleUtil.createDocument(uniqueId, text);
+
+      IndexWriterConfig config =
+          new IndexWriterConfig(LuceneExampleUtil.createAnalyzerWrapper());
+      config.setOpenMode(OpenMode.CREATE_OR_APPEND);
+
+      writer = new IndexWriter(indexDir, config);
+      writer.addDocument(document);
+      writer.commit();
+
+      responseMap.put("status", 0);
+      responseMap.put("message", "OK");
     } catch (IOException e) {
-      responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
-          e.getMessage());
+      responseMap.put("status", -1);
+      responseMap.put("message", e.getMessage());
     } finally {
       try {
-        indexDir.close();
+        if (writer != null) {
+          writer.close();
+        }
       } catch (IOException e) {
-        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
-            e.getMessage());
+        responseMap.put("status", -1);
+        responseMap.put("message", e.getMessage());
+      }
+      try {
+        if (indexDir != null) {
+          indexDir.close();
+        }
+      } catch (IOException e) {
+        responseMap.put("status", -1);
+        responseMap.put("message", e.getMessage());
       }
     }
 
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      responseJSON = mapper.writeValueAsString(responseMap);
+    } catch (IOException e) {
+      responseJSON =
+          String.format("{\"status\":-1, \"message\":\"%s\"}", e.getMessage());
+    }
     System.out.println(responseJSON);
   }
 

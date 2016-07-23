@@ -33,11 +33,25 @@ import org.junit.Before;
 import junit.framework.TestCase;
 
 public class UpdateCommandTest extends TestCase {
+  private String index;
+
   private ByteArrayOutputStream _baos;
   private PrintStream _out;
 
   @Before
   public void setUp() {
+    this.index = System.getProperty("java.io.tmpdir");
+    String uniqueId = "1";
+    String text = "Lucene is an open source software.";
+
+    Map<String, Object> addAttrs = new HashMap<String, Object>();
+    addAttrs.put("index", this.index);
+    addAttrs.put("unique_id", uniqueId);
+    addAttrs.put("text", text);
+
+    AddCommand addCommand = new AddCommand();
+    addCommand.execute(addAttrs);
+
     _baos = new ByteArrayOutputStream();
     _out = System.out;
     System.setOut(new PrintStream(new BufferedOutputStream(_baos)));
@@ -50,19 +64,21 @@ public class UpdateCommandTest extends TestCase {
 
   public void testExecute()
       throws JsonParseException, JsonMappingException, IOException {
-    String indexPath = System.getProperty("java.io.tmpdir");
+    String index = this.index;
+    String uniqueId = "1";
+    String text = "Lucene is a full-text search engine.";
 
     Map<String, Object> attrs = new HashMap<String, Object>();
-    attrs.put("index_path", indexPath);
-    attrs.put("data",
-        "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is an OSS.\"}");
+    attrs.put("index", index);
+    attrs.put("unique_id", uniqueId);
+    attrs.put("text", text);
 
     UpdateCommand updateCommand = new UpdateCommand();
     updateCommand.execute(attrs);
 
     System.out.flush();
 
-    String expected = "{\"status\":\"OK\"}\n";
+    String expected = "{\"status\":0,\"message\":\"OK\"}\n";
     String actual = _baos.toString();
 
     Map<String, Object> expectedMap = new ObjectMapper().readValue(expected,
@@ -73,6 +89,6 @@ public class UpdateCommandTest extends TestCase {
         new TypeReference<HashMap<String, Object>>() {
         });
 
-    assertEquals(expectedMap, actualMap);
+    assertEquals(expectedMap.get("status"), actualMap.get("status"));
   }
 }

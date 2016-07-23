@@ -39,36 +39,29 @@ public class LuceneExampleCLI {
         .title("Available Commands").metavar("COMMAND");
 
     Subparser addCmdSubParser = commandSubpersers.addParser("add")
-        .help("Add data to index.").setDefault("command", new AddCommand());
-    addCmdSubParser.addArgument("-i", "--index-path")
-        .help("Index directory path.");
-    addCmdSubParser.addArgument("-d", "--data")
-        .help("Document data formatted using JSON.");
+        .help("Add text to index.").setDefault("command", new AddCommand());
+    addCmdSubParser.addArgument("-i", "--index").help("Index path.");
+    addCmdSubParser.addArgument("-u", "--unique-id").help("Unique ID.");
+    addCmdSubParser.addArgument("-t", "--text").help("Text.");
 
-    Subparser updateCmdSubParser =
-        commandSubpersers.addParser("update").help("Update data of index.")
-            .setDefault("command", new UpdateCommand());
-    updateCmdSubParser.addArgument("-i", "--index-path")
-        .help("Index directory path.");
-    updateCmdSubParser.addArgument("-d", "--data")
-        .help("Document data formatted using JSON.");
+    Subparser updateCmdSubParser = commandSubpersers.addParser("update")
+        .help("Update text to index by unique ID.")
+        .setDefault("command", new UpdateCommand());
+    updateCmdSubParser.addArgument("-i", "--index").help("Index path.");
+    updateCmdSubParser.addArgument("-u", "--unique-id").help("Unique ID.");
+    updateCmdSubParser.addArgument("-t", "--text").help("Text.");
 
-    Subparser deleteCmdSubParser =
-        commandSubpersers.addParser("delete").help("Delete data from index.")
-            .setDefault("command", new DeleteCommand());
-    deleteCmdSubParser.addArgument("-i", "--index-path")
-        .help("Index directory path.");
-    deleteCmdSubParser.addArgument("-v", "--unique-key-field-value")
-        .help("Unique key field value.");
+    Subparser deleteCmdSubParser = commandSubpersers.addParser("delete")
+        .help("Delete text from index by unique ID.")
+        .setDefault("command", new DeleteCommand());
+    deleteCmdSubParser.addArgument("-i", "--index").help("Index path.");
+    deleteCmdSubParser.addArgument("-u", "--unique-id").help("Unique ID.");
 
-    Subparser searchCmdSubParser =
-        commandSubpersers.addParser("search").help("Search data of index.")
-            .setDefault("command", new SearchCommand());
-    searchCmdSubParser.addArgument("-i", "--index-path")
-        .help("Index directory path.");
-    searchCmdSubParser.addArgument("-f", "--field").help("Search field.");
-    searchCmdSubParser.addArgument("-q", "--query")
-        .help("Query to search index.");
+    Subparser searchCmdSubParser = commandSubpersers.addParser("search")
+        .help("Search text of index by query.")
+        .setDefault("command", new SearchCommand());
+    searchCmdSubParser.addArgument("-i", "--index").help("Index path.");
+    searchCmdSubParser.addArgument("-q", "--query").help("Query string.");
 
     try {
       Namespace ns = argumentParser.parseArgs(args);

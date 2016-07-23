@@ -16,71 +16,42 @@
  */
 package com.github.mosuka.apache.lucene.example.utils;
 
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.ja.JapaneseAnalyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 
 public class LuceneExampleUtil {
-  public static String UNIQUE_KEY_FIELD = "id";
-  public static String DEFAULT_SEARCH_FIELD = "id";
-  public static Analyzer DEFAULT_ANALYZER = new StandardAnalyzer();
 
-  public static Map<String, Analyzer> getSchema() {
+  public static Map<String, Analyzer> getAnalyzerMap() {
     Analyzer keywordAnalyzer = new KeywordAnalyzer();
     Analyzer japaneseAnalyzer = new JapaneseAnalyzer();
 
-    Map<String, Analyzer> schema = new HashMap<>();
-    schema.put(UNIQUE_KEY_FIELD, keywordAnalyzer);
-    schema.put("title", japaneseAnalyzer);
-    schema.put("description", japaneseAnalyzer);
+    Map<String, Analyzer> analyzerMap = new HashMap<>();
+    analyzerMap.put("id", keywordAnalyzer);
+    analyzerMap.put("text", japaneseAnalyzer);
 
-    return schema;
+    return analyzerMap;
   }
 
-  public static Document createDocument(String dataStr)
-      throws JsonParseException, JsonMappingException, IOException {
-    Map<String, Object> dataMap = new ObjectMapper().readValue(dataStr,
-        new TypeReference<HashMap<String, Object>>() {
-        });
-
+  public static Document createDocument(String id, String text) {
     Document document = new Document();
-
-    for (Iterator<String> i = dataMap.keySet().iterator(); i.hasNext();) {
-      String fieldName = i.next();
-
-      Object fieldValue = dataMap.get(fieldName);
-      if (fieldValue instanceof String) {
-        if (fieldName.equals(UNIQUE_KEY_FIELD)) {
-          document.add(new StringField(fieldName,
-              (String) dataMap.get(fieldName), Store.YES));
-        } else {
-          document.add(new TextField(fieldName, (String) dataMap.get(fieldName),
-              Store.YES));
-        }
-      }
-    }
+    document.add(new StringField("id", id, Store.YES));
+    document.add(new TextField("text", text, Store.YES));
 
     return document;
   }
 
   public static PerFieldAnalyzerWrapper createAnalyzerWrapper() {
-    PerFieldAnalyzerWrapper analyzerWrapper =
-        new PerFieldAnalyzerWrapper(DEFAULT_ANALYZER, getSchema());
+    PerFieldAnalyzerWrapper analyzerWrapper = new PerFieldAnalyzerWrapper(
+        getAnalyzerMap().get("text"), getAnalyzerMap());
 
     return analyzerWrapper;
   }

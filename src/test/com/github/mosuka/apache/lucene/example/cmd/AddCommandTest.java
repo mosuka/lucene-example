@@ -50,19 +50,21 @@ public class AddCommandTest extends TestCase {
 
   public void testExecute()
       throws JsonParseException, JsonMappingException, IOException {
-    String indexPath = System.getProperty("java.io.tmpdir");
+    String index = System.getProperty("java.io.tmpdir");
+    String uniqueId = "1";
+    String text = "Lucene is an open source software.";
 
     Map<String, Object> attrs = new HashMap<String, Object>();
-    attrs.put("index_path", indexPath);
-    attrs.put("data",
-        "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is an OSS.\"}");
+    attrs.put("index", index);
+    attrs.put("unique_id", uniqueId);
+    attrs.put("text", text);
 
     AddCommand addCommand = new AddCommand();
     addCommand.execute(attrs);
 
     System.out.flush();
 
-    String expected = "{\"status\":\"OK\"}\n";
+    String expected = "{\"status\":0,\"message\":\"OK\"}\n";
     String actual = _baos.toString();
 
     Map<String, Object> expectedMap = new ObjectMapper().readValue(expected,
@@ -73,6 +75,6 @@ public class AddCommandTest extends TestCase {
         new TypeReference<HashMap<String, Object>>() {
         });
 
-    assertEquals(expectedMap, actualMap);
+    assertEquals(expectedMap.get("status"), actualMap.get("status"));
   }
 }

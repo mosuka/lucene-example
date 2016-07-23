@@ -31,24 +31,23 @@ import org.codehaus.jackson.map.JsonMappingException;
 import junit.framework.TestCase;
 
 public class LuceneExampleUtilTest extends TestCase {
+
   public void testCreateDocument()
       throws JsonParseException, JsonMappingException, IOException {
-    String dataStr =
-        "{\"id\":\"1\", \"title\":\"Lucene\", \"description\":\"Lucene is a full-text serch library implemented in Java.\"}";
-    Document document = LuceneExampleUtil.createDocument(dataStr);
+    String id = "1";
+    String text = "Lucene is a full-text serch library implemented in Java.";
+
+    Document document = LuceneExampleUtil.createDocument(id, text);
 
     String expectedId = "1";
     String actualId = document.getField("id").stringValue();
     assertEquals(expectedId, actualId);
 
-    String expectedTitle = "Lucene";
-    String actualTitle = document.getField("title").stringValue();
-    assertEquals(expectedTitle, actualTitle);
-
-    String expectedDescription =
+    String expectedText =
         "Lucene is a full-text serch library implemented in Java.";
-    String actualDescription = document.getField("description").stringValue();
-    assertEquals(expectedDescription, actualDescription);
+    String actualText = document.getField("text").stringValue();
+    assertEquals(expectedText, actualText);
+
   }
 
   public void testCreateAnalyzerWrapper() throws IOException {
@@ -69,29 +68,18 @@ public class LuceneExampleUtilTest extends TestCase {
     tokenStream.close();
     assertEquals(expectedIdTermList, actualIdTermList);
 
-    List<String> expectedTitleTermList =
-        new LinkedList<String>(Arrays.asList("lucene"));
-    List<String> actualTitleTermList = new LinkedList<String>();
-    tokenStream = wrapper.tokenStream("title", "Lucene");
-    charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
-    tokenStream.reset();
-    while (tokenStream.incrementToken()) {
-      actualTitleTermList.add(charTermAttribute.toString());
-    }
-    tokenStream.close();
-    assertEquals(expectedTitleTermList, actualTitleTermList);
-
-    List<String> expectedDescriptionTermList = new LinkedList<String>(Arrays
+    List<String> expectedTextTermList = new LinkedList<String>(Arrays
         .asList("lucene", "is", "a", "full", "text", "search", "library"));
-    List<String> actualDescriptionTermList = new LinkedList<String>();
-    tokenStream = wrapper.tokenStream("description",
-        "Lucene is a Full-text search library.");
+    List<String> actualTextTermList = new LinkedList<String>();
+    tokenStream =
+        wrapper.tokenStream("text", "Lucene is a Full-text search library.");
     charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
     tokenStream.reset();
     while (tokenStream.incrementToken()) {
-      actualDescriptionTermList.add(charTermAttribute.toString());
+      actualTextTermList.add(charTermAttribute.toString());
     }
     tokenStream.close();
-    assertEquals(expectedDescriptionTermList, actualDescriptionTermList);
+    assertEquals(expectedTextTermList, actualTextTermList);
   }
+
 }

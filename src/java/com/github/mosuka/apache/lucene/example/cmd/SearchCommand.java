@@ -18,7 +18,6 @@ package com.github.mosuka.apache.lucene.example.cmd;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,64 +38,79 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.github.mosuka.apache.lucene.example.utils.LuceneExampleUtil;
-
 public class SearchCommand implements Command {
 
   @Override
   public void execute(Map<String, Object> attrs) {
+    Map<String, Object> responseMap = new LinkedHashMap<String, Object>();
+
     String responseJSON = null;
     Directory indexDir = null;
+    IndexReader reader = null;
 
     try {
-      indexDir =
-          FSDirectory.open(new File((String) attrs.get("index_path")).toPath());
+      String index = (String) attrs.get("index");
+      String queryStr = (String) attrs.get("query");
 
-      IndexReader reader = null;
-      try {
-        String field = (attrs.get("field") != null ? (String) attrs.get("field")
-            : LuceneExampleUtil.DEFAULT_SEARCH_FIELD);
-        QueryParser queryParser =
-            new QueryParser(field, new JapaneseAnalyzer());
-        Query query = queryParser.parse((String) attrs.get("query"));
+      indexDir = FSDirectory.open(new File(index).toPath());
 
-        reader = DirectoryReader.open(indexDir);
-        IndexSearcher searcher = new IndexSearcher(reader);
+      QueryParser queryParser = new QueryParser("text", new JapaneseAnalyzer());
+      Query query = queryParser.parse(queryStr);
 
-        TopDocs topDocs = searcher.search(query, 10);
-        List<Map<String, Object>> result =
-            new LinkedList<Map<String, Object>>();
-        for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
-          Document document = searcher.doc(scoreDoc.doc);
-          Map<String, Object> documentMap = new LinkedHashMap<String, Object>();
-          for (Iterator<IndexableField> i = document.iterator(); i.hasNext();) {
-            IndexableField f = i.next();
-            documentMap.put(f.name(), f.stringValue());
-          }
-          result.add(documentMap);
+      reader = DirectoryReader.open(indexDir);
+      IndexSearcher searcher = new IndexSearcher(reader);
+
+      TopDocs topDocs = searcher.search(query, 10);
+
+      List<Map<String, Object>> documentList =
+          new LinkedList<Map<String, Object>>();
+      for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
+        Document document = searcher.doc(scoreDoc.doc);
+
+        Map<String, Object> documentMap = new LinkedHashMap<String, Object>();
+        for (IndexableField f : document.getFields()) {
+          documentMap.put(f.name(), f.stringValue());
         }
-        responseJSON = new ObjectMapper().writeValueAsString(result);
-      } catch (IOException e) {
-        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
-            e.getMessage());
-      } catch (ParseException e) {
-        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
-            e.getMessage());
-      } finally {
+        documentMap.put("score", scoreDoc.score);
+        documentList.add(documentMap);
+      }
+
+      responseMap.put("status", 0);
+      responseMap.put("message", "OK");
+      responseMap.put("totalHits", topDocs.totalHits);
+      responseMap.put("maxScore", topDocs.getMaxScore());
+      responseMap.put("result", documentList);
+    } catch (IOException e) {
+      responseMap.put("status", -1);
+      responseMap.put("message", e.getMessage());
+    } catch (ParseException e) {
+      responseMap.put("status", -1);
+      responseMap.put("message", e.getMessage());
+    } finally {
+      try {
         if (reader != null) {
           reader.close();
         }
-      }
-    } catch (IOException e) {
-      responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
-          e.getMessage());
-    } finally {
-      try {
-        indexDir.close();
       } catch (IOException e) {
-        responseJSON = String.format("{\"status\":\"NG\", \"message\":\"%s\"}",
-            e.getMessage());
+        responseMap.put("status", -1);
+        responseMap.put("message", e.getMessage());
       }
+      try {
+        if (indexDir != null) {
+          indexDir.close();
+        }
+      } catch (IOException e) {
+        responseMap.put("status", -1);
+        responseMap.put("message", e.getMessage());
+      }
+    }
+
+    try {
+      ObjectMapper mapper = new ObjectMapper();
+      responseJSON = mapper.writeValueAsString(responseMap);
+    } catch (IOException e) {
+      responseJSON =
+          String.format("{\"status\":-1, \"message\":\"%s\"}", e.getMessage());
     }
     System.out.println(responseJSON);
   }

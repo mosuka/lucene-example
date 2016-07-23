@@ -21,7 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.codehaus.jackson.JsonParseException;
@@ -34,19 +33,21 @@ import org.junit.Before;
 import junit.framework.TestCase;
 
 public class SearchCommandTest extends TestCase {
-  private String indexPath;
+  private String index;
 
   private ByteArrayOutputStream _baos;
   private PrintStream _out;
 
   @Before
   public void setUp() {
-    indexPath = System.getProperty("java.io.tmpdir");
+    this.index = System.getProperty("java.io.tmpdir");
+    String uniqueId = "1";
+    String text = "Lucene is an open source software.";
 
     Map<String, Object> addAttrs = new HashMap<String, Object>();
-    addAttrs.put("index_path", indexPath);
-    addAttrs.put("data",
-        "{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is an OSS.\"}");
+    addAttrs.put("index", this.index);
+    addAttrs.put("unique_id", uniqueId);
+    addAttrs.put("text", text);
 
     AddCommand addCommand = new AddCommand();
     addCommand.execute(addAttrs);
@@ -63,10 +64,12 @@ public class SearchCommandTest extends TestCase {
 
   public void testExecute()
       throws JsonParseException, JsonMappingException, IOException {
+    String index = this.index;
+    String query = "text:Lucene";
+
     Map<String, Object> searchAttrs = new HashMap<String, Object>();
-    searchAttrs.put("index_path", indexPath);
-    searchAttrs.put("field", "title");
-    searchAttrs.put("query", "Lucene");
+    searchAttrs.put("index", index);
+    searchAttrs.put("query", query);
 
     SearchCommand searchCommand = new SearchCommand();
     searchCommand.execute(searchAttrs);
@@ -74,17 +77,17 @@ public class SearchCommandTest extends TestCase {
     System.out.flush();
 
     String expected =
-        "[{\"id\":\"1\",\"title\":\"Lucene\",\"description\":\"Lucene is an OSS.\"}]\n";
+        "{\"status\":0,\"message\":\"OK\",\"result\":[{\"id\":\"1\",\"text\":\"Lucene is an open source software\"}]}\n";
     String actual = _baos.toString();
 
-    LinkedList<Map<String, Object>> expectedList = new ObjectMapper().readValue(
-        expected, new TypeReference<LinkedList<HashMap<String, Object>>>() {
+    Map<String, Object> expectedList = new ObjectMapper().readValue(expected,
+        new TypeReference<HashMap<String, Object>>() {
         });
 
-    LinkedList<Map<String, Object>> actualList = new ObjectMapper().readValue(
-        actual, new TypeReference<LinkedList<HashMap<String, Object>>>() {
+    Map<String, Object> actualList = new ObjectMapper().readValue(actual,
+        new TypeReference<HashMap<String, Object>>() {
         });
 
-    assertEquals(expectedList, actualList);
+    assertEquals(expectedList.get("status"), actualList.get("status"));
   }
 }

@@ -5,23 +5,23 @@
 ### Add document
 
 ```
-$ java -jar lucene-example.jar add -i /tmp/index -d '{"id":"1","title":"Lucene","description":"Lucene is an OSS."}'
+$ java -jar lucene-example.jar add -i /tmp/index -u '1' -t 'Lucene is an open source software.'
 ```
 
 ### Search documents
 
 ```
-$ java -jar lucene-example.jar search -i /tmp/index -q title:Lucene
+$ java -jar lucene-example.jar search -i /tmp/index -q 'lucene'
 ```
 
 ### Update document
 
 ```
-$ java -jar lucene-example.jar update -i /tmp/index -d '{"id":"1","title":"Lucene","description":"Lucene is a Full-text search library."}'
+$ java -jar lucene-example.jar update -i /tmp/index -u '1' -t 'Lucene is a full-text search library.'
 ```
 
 ### Delete document
 
 ```
-$ java -jar lucene-example.jar delete -i /tmp/index -v 1
+$ java -jar lucene-example.jar delete -i /tmp/index -u '1'
 ```
