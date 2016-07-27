@@ -30,10 +30,10 @@
   <property name="test.build.dir" value="${test.target.dir}/classes" />
 
   <property name="lib.dir" value="lib" />
-  <property name="src.dir" value="src/java" />
+  <property name="src.dir" value="src/main/java" />
 
   <property name="test.lib.dir" value="test-lib" />
-  <property name="test.src.dir" value="src/test" />
+  <property name="test.src.dir" value="src/test/java" />
 
   <property name="dist.dir" value="dist" />
   <property name="package.dir" value="package" />
