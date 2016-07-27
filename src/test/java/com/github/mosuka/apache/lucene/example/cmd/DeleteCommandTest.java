@@ -48,8 +48,7 @@ public class DeleteCommandTest extends TestCase {
     System.setOut(_out);
   }
 
-  public void testExecute()
-      throws JsonParseException, JsonMappingException, IOException {
+  public void testExecute() throws JsonParseException, JsonMappingException, IOException {
     String index = System.getProperty("java.io.tmpdir");
     String uniqueId = "1";
 
@@ -65,12 +64,12 @@ public class DeleteCommandTest extends TestCase {
     String expected = "{\"status\":0,\"message\":\"OK\"}\n";
     String actual = _baos.toString();
 
-    Map<String, Object> expectedMap = new ObjectMapper().readValue(expected,
-        new TypeReference<HashMap<String, Object>>() {
+    Map<String, Object> expectedMap =
+        new ObjectMapper().readValue(expected, new TypeReference<HashMap<String, Object>>() {
         });
 
-    Map<String, Object> actualMap = new ObjectMapper().readValue(actual,
-        new TypeReference<HashMap<String, Object>>() {
+    Map<String, Object> actualMap =
+        new ObjectMapper().readValue(actual, new TypeReference<HashMap<String, Object>>() {
         });
 
     assertEquals(expectedMap.get("status"), actualMap.get("status"));

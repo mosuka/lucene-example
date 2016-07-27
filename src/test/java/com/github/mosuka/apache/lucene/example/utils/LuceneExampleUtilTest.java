@@ -32,8 +32,7 @@ import junit.framework.TestCase;
 
 public class LuceneExampleUtilTest extends TestCase {
 
-  public void testCreateDocument()
-      throws JsonParseException, JsonMappingException, IOException {
+  public void testCreateDocument() throws JsonParseException, JsonMappingException, IOException {
     String id = "1";
     String text = "Lucene is a full-text serch library implemented in Java.";
 
@@ -43,8 +42,7 @@ public class LuceneExampleUtilTest extends TestCase {
     String actualId = document.getField("id").stringValue();
     assertEquals(expectedId, actualId);
 
-    String expectedText =
-        "Lucene is a full-text serch library implemented in Java.";
+    String expectedText = "Lucene is a full-text serch library implemented in Java.";
     String actualText = document.getField("text").stringValue();
     assertEquals(expectedText, actualText);
   }
@@ -55,8 +53,7 @@ public class LuceneExampleUtilTest extends TestCase {
     TokenStream tokenStream = null;
     CharTermAttribute charTermAttribute = null;
 
-    List<String> expectedIdTermList =
-        new LinkedList<String>(Arrays.asList("1"));
+    List<String> expectedIdTermList = new LinkedList<String>(Arrays.asList("1"));
     List<String> actualIdTermList = new LinkedList<String>();
     tokenStream = wrapper.tokenStream("id", "1");
     charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
@@ -67,11 +64,10 @@ public class LuceneExampleUtilTest extends TestCase {
     tokenStream.close();
     assertEquals(expectedIdTermList, actualIdTermList);
 
-    List<String> expectedTextTermList = new LinkedList<String>(Arrays
-        .asList("lucene", "is", "a", "full", "text", "search", "library"));
+    List<String> expectedTextTermList = new LinkedList<String>(
+        Arrays.asList("lucene", "is", "a", "full", "text", "search", "library"));
     List<String> actualTextTermList = new LinkedList<String>();
-    tokenStream =
-        wrapper.tokenStream("text", "Lucene is a Full-text search library.");
+    tokenStream = wrapper.tokenStream("text", "Lucene is a Full-text search library.");
     charTermAttribute = tokenStream.addAttribute(CharTermAttribute.class);
     tokenStream.reset();
     while (tokenStream.incrementToken()) {

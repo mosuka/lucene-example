@@ -51,8 +51,7 @@ public class UpdateCommand implements Command {
 
       Document document = LuceneExampleUtil.createDocument(uniqueId, text);
 
-      IndexWriterConfig config =
-          new IndexWriterConfig(LuceneExampleUtil.createAnalyzerWrapper());
+      IndexWriterConfig config = new IndexWriterConfig(LuceneExampleUtil.createAnalyzerWrapper());
       config.setOpenMode(OpenMode.CREATE_OR_APPEND);
 
       writer = new IndexWriter(indexDir, config);
@@ -70,7 +69,7 @@ public class UpdateCommand implements Command {
           writer.close();
         }
       } catch (IOException e) {
-        responseMap.put("status", -1);
+        responseMap.put("status", 1);
         responseMap.put("message", e.getMessage());
       }
       try {
@@ -78,7 +77,7 @@ public class UpdateCommand implements Command {
           indexDir.close();
         }
       } catch (IOException e) {
-        responseMap.put("status", -1);
+        responseMap.put("status", 1);
         responseMap.put("message", e.getMessage());
       }
     }
@@ -87,8 +86,7 @@ public class UpdateCommand implements Command {
       ObjectMapper mapper = new ObjectMapper();
       responseJSON = mapper.writeValueAsString(responseMap);
     } catch (IOException e) {
-      responseJSON =
-          String.format("{\"status\":-1, \"message\":\"%s\"}", e.getMessage());
+      responseJSON = String.format("{\"status\":1, \"message\":\"%s\"}", e.getMessage());
     }
     System.out.println(responseJSON);
   }

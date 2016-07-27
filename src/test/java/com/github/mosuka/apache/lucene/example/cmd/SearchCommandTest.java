@@ -62,8 +62,7 @@ public class SearchCommandTest extends TestCase {
     System.setOut(_out);
   }
 
-  public void testExecute()
-      throws JsonParseException, JsonMappingException, IOException {
+  public void testExecute() throws JsonParseException, JsonMappingException, IOException {
     String index = this.index;
     String query = "text:Lucene";
 
@@ -80,12 +79,12 @@ public class SearchCommandTest extends TestCase {
         "{\"status\":0,\"message\":\"OK\",\"result\":[{\"id\":\"1\",\"text\":\"Lucene is an open source software\"}]}\n";
     String actual = _baos.toString();
 
-    Map<String, Object> expectedList = new ObjectMapper().readValue(expected,
-        new TypeReference<HashMap<String, Object>>() {
+    Map<String, Object> expectedList =
+        new ObjectMapper().readValue(expected, new TypeReference<HashMap<String, Object>>() {
         });
 
-    Map<String, Object> actualList = new ObjectMapper().readValue(actual,
-        new TypeReference<HashMap<String, Object>>() {
+    Map<String, Object> actualList =
+        new ObjectMapper().readValue(actual, new TypeReference<HashMap<String, Object>>() {
         });
 
     assertEquals(expectedList.get("status"), actualList.get("status"));

@@ -62,8 +62,7 @@ public class SearchCommand implements Command {
 
       TopDocs topDocs = searcher.search(query, 10);
 
-      List<Map<String, Object>> documentList =
-          new LinkedList<Map<String, Object>>();
+      List<Map<String, Object>> documentList = new LinkedList<Map<String, Object>>();
       for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
         Document document = searcher.doc(scoreDoc.doc);
 
@@ -81,10 +80,10 @@ public class SearchCommand implements Command {
       responseMap.put("maxScore", topDocs.getMaxScore());
       responseMap.put("result", documentList);
     } catch (IOException e) {
-      responseMap.put("status", -1);
+      responseMap.put("status", 1);
       responseMap.put("message", e.getMessage());
     } catch (ParseException e) {
-      responseMap.put("status", -1);
+      responseMap.put("status", 1);
       responseMap.put("message", e.getMessage());
     } finally {
       try {
@@ -92,7 +91,7 @@ public class SearchCommand implements Command {
           reader.close();
         }
       } catch (IOException e) {
-        responseMap.put("status", -1);
+        responseMap.put("status", 1);
         responseMap.put("message", e.getMessage());
       }
       try {
@@ -100,7 +99,7 @@ public class SearchCommand implements Command {
           indexDir.close();
         }
       } catch (IOException e) {
-        responseMap.put("status", -1);
+        responseMap.put("status", 1);
         responseMap.put("message", e.getMessage());
       }
     }
@@ -109,8 +108,7 @@ public class SearchCommand implements Command {
       ObjectMapper mapper = new ObjectMapper();
       responseJSON = mapper.writeValueAsString(responseMap);
     } catch (IOException e) {
-      responseJSON =
-          String.format("{\"status\":-1, \"message\":\"%s\"}", e.getMessage());
+      responseJSON = String.format("{\"status\":1, \"message\":\"%s\"}", e.getMessage());
     }
     System.out.println(responseJSON);
   }
