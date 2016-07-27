@@ -47,7 +47,6 @@ public class LuceneExampleUtilTest extends TestCase {
         "Lucene is a full-text serch library implemented in Java.";
     String actualText = document.getField("text").stringValue();
     assertEquals(expectedText, actualText);
-
   }
 
   public void testCreateAnalyzerWrapper() throws IOException {
