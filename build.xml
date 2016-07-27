@@ -16,7 +16,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  -->
-<project basedir="." default="clean" name="lucene-example" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project basedir="." default="compile" name="lucene-example" xmlns:ivy="antlib:org.apache.ivy.ant">
   <property name="target" value="1.8" />
   <property name="source" value="1.8" />
 
