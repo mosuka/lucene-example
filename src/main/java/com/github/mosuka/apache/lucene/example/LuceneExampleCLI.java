@@ -32,36 +32,34 @@ import net.sourceforge.argparse4j.inf.Subparsers;
 public class LuceneExampleCLI {
 
   public static void main(String[] args) {
-    ArgumentParser argumentParser =
-        ArgumentParsers.newArgumentParser("java lucene-example.jar");
+    ArgumentParser argumentParser = ArgumentParsers.newArgumentParser("java lucene-example.jar");
 
-    Subparsers commandSubpersers = argumentParser.addSubparsers()
-        .title("Available Commands").metavar("COMMAND");
+    Subparsers commandSubpersers =
+        argumentParser.addSubparsers().title("Available Commands").metavar("COMMAND");
 
-    Subparser addCmdSubParser = commandSubpersers.addParser("add")
-        .help("Add text to index.").setDefault("command", new AddCommand());
-    addCmdSubParser.addArgument("-i", "--index").help("Index path.");
-    addCmdSubParser.addArgument("-u", "--unique-id").help("Unique ID.");
-    addCmdSubParser.addArgument("-t", "--text").help("Text.");
+    Subparser addCmdSubParser = commandSubpersers.addParser("add").help("Add text to index.")
+        .setDefault("command", new AddCommand());
+    addCmdSubParser.addArgument("-i", "--index").help("Index path.\nExample: /tmp/example");
+    addCmdSubParser.addArgument("-u", "--unique-id").help("Unique ID.\nExample: 1");
+    addCmdSubParser.addArgument("-t", "--text")
+        .help("Text.\nExample: Lucene is a full text search library.");
 
     Subparser updateCmdSubParser = commandSubpersers.addParser("update")
-        .help("Update text to index by unique ID.")
-        .setDefault("command", new UpdateCommand());
-    updateCmdSubParser.addArgument("-i", "--index").help("Index path.");
-    updateCmdSubParser.addArgument("-u", "--unique-id").help("Unique ID.");
-    updateCmdSubParser.addArgument("-t", "--text").help("Text.");
+        .help("Update text to index by unique ID.").setDefault("command", new UpdateCommand());
+    updateCmdSubParser.addArgument("-i", "--index").help("Index path.\nExample: /tmp/example");
+    updateCmdSubParser.addArgument("-u", "--unique-id").help("Unique ID.\nExample: 1");
+    updateCmdSubParser.addArgument("-t", "--text")
+        .help("Text.\nExample: Lucene is an open source software.");
 
     Subparser deleteCmdSubParser = commandSubpersers.addParser("delete")
-        .help("Delete text from index by unique ID.")
-        .setDefault("command", new DeleteCommand());
-    deleteCmdSubParser.addArgument("-i", "--index").help("Index path.");
-    deleteCmdSubParser.addArgument("-u", "--unique-id").help("Unique ID.");
+        .help("Delete text from index by unique ID.").setDefault("command", new DeleteCommand());
+    deleteCmdSubParser.addArgument("-i", "--index").help("Index path.\nExample: /tmp/example");
+    deleteCmdSubParser.addArgument("-u", "--unique-id").help("Unique ID.\nExample: 1");
 
     Subparser searchCmdSubParser = commandSubpersers.addParser("search")
-        .help("Search text of index by query.")
-        .setDefault("command", new SearchCommand());
-    searchCmdSubParser.addArgument("-i", "--index").help("Index path.");
-    searchCmdSubParser.addArgument("-q", "--query").help("Query string.");
+        .help("Search text of index by query.").setDefault("command", new SearchCommand());
+    searchCmdSubParser.addArgument("-i", "--index").help("Index path.\nExample: /tmp/example");
+    searchCmdSubParser.addArgument("-q", "--query").help("Query string.\nExample: Lucene");
 
     try {
       Namespace ns = argumentParser.parseArgs(args);
