@@ -67,6 +67,7 @@ public class LuceneExampleCLI {
       command.execute(ns.getAttrs());
     } catch (ArgumentParserException e) {
       argumentParser.handleError(e);
+      System.exit(1);
     }
   }
 
