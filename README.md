@@ -2,6 +2,23 @@
 
 ## Examples
 
+### Show help
+
+```
+$ java -jar lucene-example.jar -h
+usage: java lucene-example.jar [-h] COMMAND ...
+
+optional arguments:
+  -h, --help             show this help message and exit
+
+Available Commands:
+  COMMAND
+    add                  Add text to index.
+    update               Update text to index by unique ID.
+    delete               Delete text from index by unique ID.
+    search               Search text of index by query.
+```
+
 ### Add document
 
 ```
