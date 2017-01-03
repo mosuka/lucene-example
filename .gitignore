@@ -18,6 +18,10 @@ hs_err_pid*
 .project
 .settings/
 
+# IntelliJ
+.idea/
+*.iml
+
 *.tgz
 /bin/
 /target/
